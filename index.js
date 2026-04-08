@@ -336,9 +336,22 @@ client.on('messageCreate', async (msg) => {
   }
 });
 
-client.login(process.env.BOT_TOKEN).catch((err) => {
-  console.error('🚨 [Render Debug] DISCORD LOGIN ERROR:', err);
+// Log connection state changes for debugging on Render
+client.on('shardError', (err) => {
+  console.error('🚨 [Discord] Shard/WebSocket error:', err);
 });
+
+client.on('warn', (info) => {
+  console.warn('⚠️ [Discord] Warning:', info);
+});
+
+console.log('🔑 Attempting Discord login... Token length:', process.env.BOT_TOKEN?.length ?? 0);
+client.login(process.env.BOT_TOKEN)
+  .then(() => console.log('✅ [Discord] Login promise resolved (connecting...)'))
+  .catch((err) => {
+    console.error('🚨 [Render Debug] DISCORD LOGIN ERROR code:', err.code);
+    console.error('🚨 [Render Debug] DISCORD LOGIN ERROR message:', err.message);
+  });
 
 const PORT = process.env.PORT || 3000;
 
