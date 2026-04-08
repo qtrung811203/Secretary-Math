@@ -1,7 +1,7 @@
+require('dotenv').config();
 const express = require('express');
 const app = express();
 app.use(express.json());
-require('dotenv').config();
 
 // ================= DEBUG ERROR HANDLERS =================
 process.on('uncaughtException', (err) => {
@@ -18,6 +18,7 @@ app.get('/ping', (req, res) => {
   res.json({
     status: 'ok',
     bot: client.user ? client.user.tag : 'starting...',
+    token_present: !!process.env.BOT_TOKEN,
     uptime: process.uptime(),
     timestamp: Date.now(),
   });
@@ -337,8 +338,8 @@ client.login(process.env.BOT_TOKEN).catch((err) => {
 
 const PORT = process.env.PORT || 3000;
 
-const server = app.listen(PORT, () => {
-  console.log(`🌐 API server running on port ${PORT}`);
+const server = app.listen(PORT, '0.0.0.0', () => {
+  console.log(`🌐 API server running on port ${PORT} (0.0.0.0)`);
 });
 
 server.on('error', (err) => {
