@@ -14,18 +14,22 @@ process.on('unhandledRejection', (reason, promise) => {
 const { Client, GatewayIntentBits, EmbedBuilder } = require('discord.js');
 const Database = require('better-sqlite3');
 
+// /ping route is defined AFTER client declaration below to avoid ReferenceError
+
+const client = new Client({
+  intents: [GatewayIntentBits.Guilds, GatewayIntentBits.GuildMessages, GatewayIntentBits.MessageContent],
+});
+
+// ================= PING ROUTE (must be after client declaration) =================
 app.get('/ping', (req, res) => {
   res.json({
     status: 'ok',
     bot: client.user ? client.user.tag : 'starting...',
+    bot_ready: client.isReady(),
     token_present: !!process.env.BOT_TOKEN,
     uptime: process.uptime(),
     timestamp: Date.now(),
   });
-});
-
-const client = new Client({
-  intents: [GatewayIntentBits.Guilds, GatewayIntentBits.GuildMessages, GatewayIntentBits.MessageContent],
 });
 
 const db = new Database('data.db');
