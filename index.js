@@ -2,6 +2,15 @@ const express = require('express');
 const app = express();
 app.use(express.json());
 require('dotenv').config();
+
+// ================= DEBUG ERROR HANDLERS =================
+process.on('uncaughtException', (err) => {
+  console.error('🚨 [Render Debug] UNCAUGHT EXCEPTION:', err);
+});
+
+process.on('unhandledRejection', (reason, promise) => {
+  console.error('🚨 [Render Debug] UNHANDLED REJECTION:', reason);
+});
 const { Client, GatewayIntentBits, EmbedBuilder } = require('discord.js');
 const Database = require('better-sqlite3');
 
@@ -322,10 +331,16 @@ client.on('messageCreate', async (msg) => {
   }
 });
 
-client.login(process.env.BOT_TOKEN);
+client.login(process.env.BOT_TOKEN).catch((err) => {
+  console.error('🚨 [Render Debug] DISCORD LOGIN ERROR:', err);
+});
 
 const PORT = process.env.PORT || 3000;
 
-app.listen(PORT, () => {
+const server = app.listen(PORT, () => {
   console.log(`🌐 API server running on port ${PORT}`);
+});
+
+server.on('error', (err) => {
+  console.error('🚨 [Render Debug] EXPRESS SERVER ERROR:', err);
 });
