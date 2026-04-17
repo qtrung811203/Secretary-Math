@@ -72,8 +72,8 @@ const toMoney = (n) => (n * 1000).toLocaleString('vi-VN') + ' đ';
 const isAdmin = (id) => id === process.env.ADMIN_ID;
 
 // ================= READY =================
-client.once('ready', () => {
-  console.log(`🤖 Logged in as ${client.user.tag}`);
+client.once('clientReady', (readyClient) => {
+  console.log(`🤖 Logged in as ${readyClient.user.tag}`);
 });
 
 // ================= MESSAGE =================
